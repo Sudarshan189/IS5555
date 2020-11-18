@@ -33,8 +33,8 @@ pipeline {
         stage('Build'){
             steps {
 		    //sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} build"
-		    echo ${env.WORKSPACE}
-		    echo ${NODE_NAME}
+		    echo "${env.WORKSPACE}"
+		    echo "${env.NODE_NAME}"
             }
         }
         stage('Deploy') {
