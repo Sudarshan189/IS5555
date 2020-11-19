@@ -32,15 +32,12 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-		    //sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} build"
-		  	echo "Database engine is ${WORKSPACE}"
-                	echo "DISABLE_AUTH is ${BUILD_ID}"
-			echo "DISABLE_AUTH is ${JOB_NAME}"
+		    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} build"
             }
         }
         stage('Deploy') {
             steps {
-		//sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} deploy"
+		    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} deploy"
             }
         }
     }
