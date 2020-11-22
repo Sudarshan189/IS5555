@@ -30,6 +30,12 @@ pipeline {
     packageName="${params.package}"
     JOB_NAME="${params.package}" 
   }
+  
+  checkout([$class: 'GitSCM',
+	  branches: [[name: '*/master']],
+          userRemoteConfigs: [[url: 'https://github.com/Sudarshan189/IS5555.git']],
+          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'tp-fdm-monitor-bcl']]
+          ])
 
     stages {
         stage('Build'){
