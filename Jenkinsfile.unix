@@ -19,7 +19,7 @@
 */
 
 
-currentBuild.displayName = "${params.package}_#"+currentBuild.number+"_${params.branch}"
+currentBuild.displayName = "${params.branch}_${params.package}_#"+currentBuild.number
 pipeline {
     agent any 
     
