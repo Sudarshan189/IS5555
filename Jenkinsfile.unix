@@ -39,7 +39,7 @@ pipeline {
     stage('Checkme out'){
             steps {
 	    	ws("/SAG/jenkins/workspace/sudarshan") {
-		    checkout scm
+		    echo "Hello"
 		   }
             }
         }
