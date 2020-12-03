@@ -31,7 +31,6 @@ options {
     
     label {
     	label ""
-	customWorkspace "/SAG/jenkins/workspace/sudarshan"
     
     }
     
@@ -49,7 +48,7 @@ options {
     stages {
     stage('Checkme out'){
             steps {
-	    		checkout scm
+	    		
 		    echo "Hello"
 		   
             }
