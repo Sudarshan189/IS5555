@@ -21,11 +21,22 @@
 
 currentBuild.displayName = "${params.branch}_${params.package}_#"+currentBuild.number
 pipeline {
-    agent any 
-    
-    options {
+
+options {
     	skipDefaultCheckout()
   	}
+	
+	
+    agent {
+    
+    label {
+    	label  "DEV"
+	customWorkspace "/SAG/jenkins/workspace/sudarshan"
+    
+    }
+    
+    }
+    
 	
     environment {
     SAG_HOME="/SAG/IS5555"
@@ -38,16 +49,16 @@ pipeline {
     stages {
     stage('Checkme out'){
             steps {
-	    	ws("/SAG/jenkins/workspace/sudarshan") {
+	    	
 		    echo "Hello"
-		   }
+		   
             }
         }
         stage('Build'){
             steps {
-	    	ws("/SAG/jenkins/workspace/sudarshan") {
+	    	
 		    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} build"
-		   }
+		   
             }
         }
         stage('Deploy') {
