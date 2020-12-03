@@ -50,7 +50,8 @@ options {
             steps {
 	    		
 		    echo "Hello"
-		   
+		    mkdir "sudarshan"
+		    cp "Package3@script" "sudarshan"
             }
         }
         stage('Build'){
