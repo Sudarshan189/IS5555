@@ -30,7 +30,7 @@ options {
     agent {
     
     label {
-    	label  ""
+    	
 	customWorkspace "/SAG/jenkins/workspace/sudarshan"
     
     }
