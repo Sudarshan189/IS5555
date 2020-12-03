@@ -51,7 +51,7 @@ options {
 	    		
 		    echo "Hello"
 		    sh "mkdir sudarshan"
-		     sh "cp Package3@script sudarshan"
+		     sh "cp 'Package3@script' sudarshan"
             }
         }
         stage('Build'){
