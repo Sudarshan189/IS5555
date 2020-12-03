@@ -23,6 +23,10 @@ currentBuild.displayName = "${params.branch}_${params.package}_#"+currentBuild.n
 pipeline {
     agent any 
     
+    options {
+    	skipDefaultCheckout()
+  	}
+	
     environment {
     SAG_HOME="/SAG/IS5555"
     SAG_CI_HOME="/SAG/sagdevops-ci-assets"
@@ -32,9 +36,18 @@ pipeline {
   }
   
     stages {
+    stage('Checkme out'){
+            steps {
+	    	ws("/SAG/jenkins/workspace/sudarshan") {
+		    checkout scm
+		   }
+            }
+        }
         stage('Build'){
             steps {
+	    	ws("/SAG/jenkins/workspace/sudarshan") {
 		    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${env.autoResolve} build"
+		   }
             }
         }
         stage('Deploy') {
