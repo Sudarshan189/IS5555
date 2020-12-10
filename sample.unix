@@ -1,0 +1,62 @@
+/*
+        Set below properties in global env variable in jenkins.
+        
+        //SAG_HOME="/SAG/IS5555"
+        //SAG_CI_HOME="/SAG/sagdevops-ci-assets"
+        //JENKINS_CUSTOM_WORKSPACE="/SAG/jenkins/workspace/IS5555/"
+    
+        pass below properties in parameterised build
+      autoResolve="${params.autoResolve}"
+        JOB_NAME="${params.package}" 
+        ${params.gitUrl}
+        ${params.branch}
+
+
+*/
+
+
+
+
+currentBuild.displayName = "${params.branch}_${params.package}_#"+currentBuild.number
+pipeline {
+    options {
+        skipDefaultCheckout()
+    }
+    agent any
+    environment {
+        //SAG_HOME="/SAG/IS5555"
+        //SAG_CI_HOME="/SAG/sagdevops-ci-assets"
+        //JENKINS_CUSTOM_WORKSPACE="/SAG/jenkins/workspace/IS5555/"
+        autoResolve="${params.autoResolve}"
+        JOB_NAME="${params.package}" 
+    }
+    
+    stages {
+        stage('Checkme out'){
+            steps {
+                dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: '*/'+"${params.branch}"]], 
+                        doGenerateSubmoduleConfigurations: false, 
+                        submoduleCfg: [], 
+                        userRemoteConfigs: [[url: "${params.gitUrl}"]]
+                    ])
+                }
+            }
+        }
+        stage('Build'){
+            steps {
+                dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
+                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.autoResolve} build"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
+                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.autoResolve} deploy"
+                }
+            }
+        }
+    }
+}
