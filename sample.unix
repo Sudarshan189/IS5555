@@ -1,45 +1,25 @@
-/*
-        Set below properties in global env variable in jenkins.
-        
-        //SAG_HOME="/SAG/IS5555"
-        //SAG_CI_HOME="/SAG/sagdevops-ci-assets"
-        //JENKINS_CUSTOM_WORKSPACE="/SAG/jenkins/workspace/IS5555/"
-    
-        pass below properties in parameterised build
-      autoResolve="${params.autoResolve}"
-        JOB_NAME="${params.package}" 
-        ${params.gitUrl}
-        ${params.branch}
-
-
-*/
-
-
-
-
-currentBuild.displayName = "${params.branch}_${params.package}_#"+currentBuild.number
+currentBuild.displayName = "${env.JOB_NAME}_(${params.BRANCH})_#"+currentBuild.number
 pipeline {
     options {
         skipDefaultCheckout()
     }
     agent any
-    environment {
-        //SAG_HOME="/SAG/IS5555"
-        //SAG_CI_HOME="/SAG/sagdevops-ci-assets"
-        //JENKINS_CUSTOM_WORKSPACE="/SAG/jenkins/workspace/IS5555/"
-        autoResolve="${params.autoResolve}"
-        JOB_NAME="${params.package}" 
-    }
-    
     stages {
-        stage('Checkme out'){
+        stage('CheckOut SCM') {
             steps {
+                logger("SAG_HOME", "${env.SAG_HOME}", "INFO")
+                logger("SAG_CI_HOME", "${env.SAG_CI_HOME}", "INFO")
+                logger("JOB_NAME", "${env.JOB_NAME}", "INFO")
+                logger("GIT_URL", "${params.GIT_URL}", "INFO")
+                logger("BRANCH", "${params.BRANCH}", "INFO")
+                logger("AUTORESOLVE", "${params.AUTORESOLVE}", "INFO")
+                logger("JENKINS_CUSTOM_WORKSPACE", "${env.JENKINS_CUSTOM_WORKSPACE}", "INFO")
                 dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
                     checkout([$class: 'GitSCM', 
-                        branches: [[name: '*/'+"${params.branch}"]], 
+                        branches: [[name: '*/'+"${params.BRANCH}"]], 
                         doGenerateSubmoduleConfigurations: false, 
                         submoduleCfg: [], 
-                        userRemoteConfigs: [[url: "${params.gitUrl}"]]
+                        userRemoteConfigs: [[url: "${params.GIT_URL}"]]
                     ])
                 }
             }
@@ -47,16 +27,20 @@ pipeline {
         stage('Build'){
             steps {
                 dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
-                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.autoResolve} build"
+                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.AUTORESOLVE} build"
                 }
             }
         }
         stage('Deploy') {
             steps {
                 dir("${env.JENKINS_CUSTOM_WORKSPACE}"){
-                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.autoResolve} deploy"
+                    sh "ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -DautoResolve=${params.AUTORESOLVE} deploy"
                 }
             }
         }
     }
+}
+
+def logger(key, value, level) {
+  echo level+":= " + key + " : " + value
 }
